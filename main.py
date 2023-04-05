@@ -2,8 +2,7 @@ import fastapi_users
 
 from fastapi_users import FastAPIUsers
 
-from enum import Enum
-from typing import List, Optional
+from typing import List
 from pydantic import BaseModel, Field
 from datetime import datetime
 
