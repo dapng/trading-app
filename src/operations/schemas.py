@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from typing import List
+
 from pydantic import BaseModel
 
 
@@ -19,6 +21,14 @@ class Operation(BaseModel):
     instrument_type: str
     date: datetime
     type: str
+
+    class Config:
+        orm_mode = True
+
+class ResponseOperation(BaseModel):
+    status: str
+    data: List[Operation]
+    details: None
 
     class Config:
         orm_mode = True
