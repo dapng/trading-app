@@ -8,7 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache
 from database import get_async_session
 from operations.models import operation
-from operations.schemas import OperationCreate, Operation
+from auth.models import role
+from operations.schemas import OperationCreate, Operation, ResponseOperation
 
 router = APIRouter(
     prefix="/operations",
@@ -23,16 +24,17 @@ def get_long_op():
     return "Много много данных, которые вычислялись сто лет"
 
 
-@router.get("/", response_model=List[Operation])
+@router.get("/", response_model=ResponseOperation)
 async def get_specific_operations(operation_type: str, session: AsyncSession = Depends(get_async_session)):
     try:
         query = select(operation).where(operation.c.type == operation_type)
         result = await session.execute(query)
         return {
-                "status": "success",
-                "data": result.all(),
-                "details": None
-            }
+            "status": "success",
+            "data": result.all(),
+            "details": None
+        }
+    
     except Exception:
         raise HTTPException(status_code=500, detail={
             "status": "error",
@@ -47,4 +49,3 @@ async def add_specific_operations(new_operation: OperationCreate, session: Async
     await session.execute(stmt)
     await session.commit()
     return {"status": "success"}
-
